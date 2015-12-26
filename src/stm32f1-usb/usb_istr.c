@@ -82,8 +82,7 @@ void USB_Istr(void)
     wIstr = _GetISTR();
 
 #if (IMR_MSK & ISTR_SOF)
-    //if (wIstr & ISTR_SOF & wInterrupt_Mask)
-    if (wIstr & ISTR_SOF)
+    if (wIstr & ISTR_SOF & wInterrupt_Mask)
     {
         _SetISTR((uint16_t)CLR_SOF);
         bIntPackSOF++;
@@ -96,8 +95,7 @@ void USB_Istr(void)
     /*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*/
 
 #if (IMR_MSK & ISTR_CTR)
-    //if (wIstr & ISTR_CTR & wInterrupt_Mask)
-    if (wIstr & ISTR_CTR)
+    if (wIstr & ISTR_CTR & wInterrupt_Mask)
     {
         /* servicing of the endpoint correct transfer interrupt */
         /* clear of the CTR flag into the sub */
@@ -109,8 +107,7 @@ void USB_Istr(void)
 #endif
     /*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*/
 #if (IMR_MSK & ISTR_RESET)
-    //if (wIstr & ISTR_RESET & wInterrupt_Mask)
-    if (wIstr & ISTR_RESET)
+    if (wIstr & ISTR_RESET & wInterrupt_Mask)
     {
         _SetISTR((uint16_t)CLR_RESET);
         Device_Property.Reset();
@@ -131,8 +128,7 @@ void USB_Istr(void)
 #endif
     /*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*/
 #if (IMR_MSK & ISTR_ERR)
-    //if (wIstr & ISTR_ERR & wInterrupt_Mask)
-    if (wIstr & ISTR_ERR)
+    if (wIstr & ISTR_ERR & wInterrupt_Mask)
     {
         _SetISTR((uint16_t)CLR_ERR);
 #ifdef ERR_CALLBACK
@@ -142,8 +138,7 @@ void USB_Istr(void)
 #endif
     /*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*/
 #if (IMR_MSK & ISTR_WKUP)
-    //if (wIstr & ISTR_WKUP & wInterrupt_Mask)
-    if (wIstr & ISTR_WKUP)
+    if (wIstr & ISTR_WKUP & wInterrupt_Mask)
     {
         _SetISTR((uint16_t)CLR_WKUP);
         Resume(RESUME_EXTERNAL);
@@ -154,8 +149,7 @@ void USB_Istr(void)
 #endif
     /*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*/
 #if (IMR_MSK & ISTR_SUSP)
-    //if (wIstr & ISTR_SUSP & wInterrupt_Mask)
-    if (wIstr & ISTR_SUSP)
+    if (wIstr & ISTR_SUSP & wInterrupt_Mask)
     {
 
         /* check if SUSPEND is possible */
@@ -178,8 +172,7 @@ void USB_Istr(void)
     /*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*/
 
 #if (IMR_MSK & ISTR_ESOF)
-    //if (wIstr & ISTR_ESOF & wInterrupt_Mask)
-    if (wIstr & ISTR_ESOF)
+    if (wIstr & ISTR_ESOF & wInterrupt_Mask)
     {
         /* clear ESOF flag in ISTR */
         _SetISTR((uint16_t)CLR_ESOF);

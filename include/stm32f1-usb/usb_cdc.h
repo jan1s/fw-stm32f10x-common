@@ -45,7 +45,7 @@
 
 /* Exported functions ------------------------------------------------------- */
 void USB_CDC_Init(void);
-int8_t USB_CDC_Read(uint8_t* c);
+uint32_t USB_CDC_Read(uint8_t* c);
 void USB_CDC_Send(uint8_t c);
 void USB_CDC_FillRxBuffer(uint8_t* data_buffer, uint8_t length);
 void USB_CDC_Handle_USBAsynchXfer (void);

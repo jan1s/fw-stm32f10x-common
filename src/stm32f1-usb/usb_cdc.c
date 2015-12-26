@@ -130,8 +130,9 @@ void USB_CDC_FillRxBuffer(uint8_t* data_buffer, uint8_t length)
 * Input          : c: call by reference get first byte from buffer.
 * Return         : bytes left in buffer, or -1 if empty.
 *******************************************************************************/
-int8_t USB_CDC_Read(uint8_t* c)
+uint32_t USB_CDC_Read(uint8_t* c)
 {
+    uint32_t available = USB_Rx_length;
     if(USB_Rx_length > 0)
     {
         (*c) = USB_Rx_Buffer[USB_Rx_ptr_out];
@@ -141,9 +142,8 @@ int8_t USB_CDC_Read(uint8_t* c)
             USB_Rx_ptr_out = 0;
         }
         USB_Rx_length--;
-        return USB_Rx_length + 1;
     }
-    return -1;
+    return available;
 }
 
 /*******************************************************************************
