@@ -220,4 +220,16 @@ void USB_CDC_Send(uint8_t c)
     }
 }
 
+
+void USB_CDC_SendBuffer(uint8_t *buffer, uint32_t length)
+{
+    while(length != 0)
+    {
+        uint8_t c = *buffer;
+        USB_CDC_Send(c);
+        buffer++;
+        length--;
+    }
+}
+
 /************************ (C) COPYRIGHT STMicroelectronics *****END OF FILE****/

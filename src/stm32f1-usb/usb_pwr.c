@@ -55,6 +55,25 @@ __IO uint32_t remotewakeupon = 0;
 /* Extern function prototypes ------------------------------------------------*/
 /* Private functions ---------------------------------------------------------*/
 
+void USB_Cable_Config(FunctionalState NewState)
+{
+	/* Enable SREN and RCK */
+	GPIO_InitTypeDef GPIO_InitStructure;
+	GPIO_InitStructure.GPIO_Pin = GPIO_Pin_15;
+	GPIO_InitStructure.GPIO_Speed = GPIO_Speed_50MHz;
+	GPIO_InitStructure.GPIO_Mode = GPIO_Mode_Out_PP;
+	GPIO_Init(GPIOA, &GPIO_InitStructure);
+	if (NewState != DISABLE)
+	{
+		GPIO_ResetBits(GPIOA, GPIO_Pin_15);
+	}
+	else
+	{
+		GPIO_SetBits(GPIOA, GPIO_Pin_15);
+	}
+}
+
+
 /*******************************************************************************
 * Function Name  : PowerOn
 * Description    :
@@ -67,7 +86,7 @@ RESULT PowerOn(void)
     uint16_t wRegVal;
 
     /*** cable plugged-in ? ***/
-    //USB_Cable_Config(ENABLE);
+    USB_Cable_Config(ENABLE);
 
     /*** CNTR_PWDN = 0 ***/
     wRegVal = CNTR_FRES;
@@ -99,7 +118,7 @@ RESULT PowerOff()
     /* clear interrupt status register */
     _SetISTR(0);
     /* Disable the Pull-Up*/
-    //USB_Cable_Config(DISABLE);
+    USB_Cable_Config(DISABLE);
     /* switch-off device */
     _SetCNTR(CNTR_FRES + CNTR_PDWN);
     /* sw variables reset */
