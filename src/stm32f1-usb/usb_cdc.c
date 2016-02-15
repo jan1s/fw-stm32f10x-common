@@ -36,6 +36,8 @@
 #include "usb_desc.h"
 #include "usb_pwr.h"
 
+#include "platform_config.h"
+
 
 /* Private typedef -----------------------------------------------------------*/
 /* Private define ------------------------------------------------------------*/
@@ -69,12 +71,17 @@ uint8_t  USB_Tx_State = 0;
 *******************************************************************************/
 void USB_CDC_Init(void)
 {
+	bCrashed = FALSE;
+
     /* Configure the EXTI line 18 connected internally to the USB IP */
     EXTI_ClearITPendingBit(EXTI_Line18);
     EXTI_InitStructure.EXTI_Line = EXTI_Line18;
     EXTI_InitStructure.EXTI_Trigger = EXTI_Trigger_Rising;
     EXTI_InitStructure.EXTI_LineCmd = ENABLE;
-    EXTI_Init(&EXTI_InitStructure);
+    if(!bCrashed)
+    {
+    	EXTI_Init(&EXTI_InitStructure);
+    }
 
     /* Select USBCLK source */
     RCC_USBCLKConfig(RCC_USBCLKSource_PLLCLK_1Div5);
@@ -92,15 +99,68 @@ void USB_CDC_Init(void)
     NVIC_InitStructure.NVIC_IRQChannelPreemptionPriority = 2;
     NVIC_InitStructure.NVIC_IRQChannelSubPriority = 0;
     NVIC_InitStructure.NVIC_IRQChannelCmd = ENABLE;
-    NVIC_Init(&NVIC_InitStructure);
+    if(!bCrashed)
+    {
+    	NVIC_Init(&NVIC_InitStructure);
+    }
 
     /* Enable the USB Wake-up interrupt */
     NVIC_InitStructure.NVIC_IRQChannel = USBWakeUp_IRQn;
     NVIC_InitStructure.NVIC_IRQChannelPreemptionPriority = 0;
-    NVIC_Init(&NVIC_InitStructure);
+    if(!bCrashed)
+    {
+    	NVIC_Init(&NVIC_InitStructure);
+    }
 
     /* Init USB Stack */
     USB_Init();
+
+    if(bCrashed)
+    {
+    	USB_CDC_DeInit();
+    }
+}
+
+/*******************************************************************************
+* Function Name  : USB_CDC_DeInit
+* Description    : Configures Main system clocks & power
+* Input          : None.
+* Return         : None.
+*******************************************************************************/
+void USB_CDC_DeInit(void)
+{
+    /* Configure the EXTI line 18 connected internally to the USB IP */
+    EXTI_ClearITPendingBit(EXTI_Line18);
+    EXTI_InitStructure.EXTI_Line = EXTI_Line18;
+    EXTI_InitStructure.EXTI_Trigger = EXTI_Trigger_Rising;
+    EXTI_InitStructure.EXTI_LineCmd = DISABLE;
+    EXTI_Init(&EXTI_InitStructure);
+
+    /* Select USBCLK source */
+    RCC_USBCLKConfig(RCC_USBCLKSource_PLLCLK_1Div5);
+
+    /* Enable the USB clock */
+    RCC_APB1PeriphClockCmd(RCC_APB1Periph_USB, ENABLE);
+
+    /* Configure USB interrupts */
+    NVIC_InitTypeDef NVIC_InitStructure;
+
+    /* 2 bit for pre-emption priority, 2 bits for subpriority */
+    NVIC_PriorityGroupConfig(NVIC_PriorityGroup_2);
+
+    NVIC_InitStructure.NVIC_IRQChannel = USB_LP_CAN1_RX0_IRQn;
+    NVIC_InitStructure.NVIC_IRQChannelPreemptionPriority = 2;
+    NVIC_InitStructure.NVIC_IRQChannelSubPriority = 0;
+    NVIC_InitStructure.NVIC_IRQChannelCmd = DISABLE;
+    NVIC_Init(&NVIC_InitStructure);
+
+    /* Enable the USB Wake-up interrupt */
+    //NVIC_InitStructure.NVIC_IRQChannel = USBWakeUp_IRQn;
+    //NVIC_InitStructure.NVIC_IRQChannelPreemptionPriority = 0;
+    //NVIC_Init(&NVIC_InitStructure);
+
+    /* Init USB Stack */
+    //USB_Init();
 }
 
 /*******************************************************************************
@@ -230,6 +290,11 @@ void USB_CDC_SendBuffer(uint8_t *buffer, uint32_t length)
         buffer++;
         length--;
     }
+}
+
+bool USB_CDC_Configured()
+{
+    return (bDeviceState == CONFIGURED);
 }
 
 /************************ (C) COPYRIGHT STMicroelectronics *****END OF FILE****/

@@ -38,7 +38,8 @@
 /* Private macro -------------------------------------------------------------*/
 /* Private variables ---------------------------------------------------------*/
 __IO uint32_t bDeviceState = UNCONNECTED; /* USB device status */
-__IO bool fSuspendEnabled = TRUE;  /* true when suspend is possible */
+__IO bool fSuspendEnabled = FALSE;  /* true when suspend is possible */
+__IO bool bCrashed = FALSE;
 __IO uint32_t EP[8];
 
 struct
@@ -65,11 +66,11 @@ void USB_Cable_Config(FunctionalState NewState)
 	GPIO_Init(GPIOA, &GPIO_InitStructure);
 	if (NewState != DISABLE)
 	{
-		GPIO_ResetBits(GPIOA, GPIO_Pin_15);
+		GPIO_SetBits(GPIOA, GPIO_Pin_15);
 	}
 	else
 	{
-		GPIO_SetBits(GPIOA, GPIO_Pin_15);
+		GPIO_ResetBits(GPIOA, GPIO_Pin_15);
 	}
 }
 
@@ -86,7 +87,7 @@ RESULT PowerOn(void)
     uint16_t wRegVal;
 
     /*** cable plugged-in ? ***/
-    USB_Cable_Config(ENABLE);
+    //USB_Cable_Config(ENABLE);
 
     /*** CNTR_PWDN = 0 ***/
     wRegVal = CNTR_FRES;
@@ -118,7 +119,7 @@ RESULT PowerOff()
     /* clear interrupt status register */
     _SetISTR(0);
     /* Disable the Pull-Up*/
-    USB_Cable_Config(DISABLE);
+    //USB_Cable_Config(DISABLE);
     /* switch-off device */
     _SetCNTR(CNTR_FRES + CNTR_PDWN);
     /* sw variables reset */

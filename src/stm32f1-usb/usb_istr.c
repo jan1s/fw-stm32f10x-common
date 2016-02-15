@@ -76,13 +76,20 @@ void (*pEpInt_OUT[7])(void) =
 *******************************************************************************/
 void USB_Istr(void)
 {
+	if(bCrashed)
+	{
+		USB_CDC_DeInit();
+		return;
+	}
+
     uint32_t i = 0;
     __IO uint32_t EP[8];
 
     wIstr = _GetISTR();
 
 #if (IMR_MSK & ISTR_SOF)
-    if (wIstr & ISTR_SOF & wInterrupt_Mask)
+    //if (wIstr & ISTR_SOF & wInterrupt_Mask)
+    if (wIstr & ISTR_SOF)
     {
         _SetISTR((uint16_t)CLR_SOF);
         bIntPackSOF++;
@@ -95,7 +102,8 @@ void USB_Istr(void)
     /*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*/
 
 #if (IMR_MSK & ISTR_CTR)
-    if (wIstr & ISTR_CTR & wInterrupt_Mask)
+    //if (wIstr & ISTR_CTR & wInterrupt_Mask)
+    if (wIstr & ISTR_CTR)
     {
         /* servicing of the endpoint correct transfer interrupt */
         /* clear of the CTR flag into the sub */
@@ -107,10 +115,12 @@ void USB_Istr(void)
 #endif
     /*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*/
 #if (IMR_MSK & ISTR_RESET)
-    if (wIstr & ISTR_RESET & wInterrupt_Mask)
+    //if (wIstr & ISTR_RESET & wInterrupt_Mask)
+    if (wIstr & ISTR_RESET)
     {
         _SetISTR((uint16_t)CLR_RESET);
         Device_Property.Reset();
+        //ERR_Callback();
 #ifdef RESET_CALLBACK
         RESET_Callback();
 #endif
@@ -118,9 +128,11 @@ void USB_Istr(void)
 #endif
     /*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*/
 #if (IMR_MSK & ISTR_DOVR)
-    if (wIstr & ISTR_DOVR & wInterrupt_Mask)
+    //if (wIstr & ISTR_DOVR & wInterrupt_Mask)
+    if(wIstr & ISTR_DOVR)
     {
         _SetISTR((uint16_t)CLR_DOVR);
+        ERR_Callback();
 #ifdef DOVR_CALLBACK
         DOVR_Callback();
 #endif
@@ -128,7 +140,8 @@ void USB_Istr(void)
 #endif
     /*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*/
 #if (IMR_MSK & ISTR_ERR)
-    if (wIstr & ISTR_ERR & wInterrupt_Mask)
+    //if (wIstr & ISTR_ERR & wInterrupt_Mask)
+    if(wIstr & ISTR_ERR)
     {
         _SetISTR((uint16_t)CLR_ERR);
 #ifdef ERR_CALLBACK
@@ -138,7 +151,8 @@ void USB_Istr(void)
 #endif
     /*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*/
 #if (IMR_MSK & ISTR_WKUP)
-    if (wIstr & ISTR_WKUP & wInterrupt_Mask)
+    //if (wIstr & ISTR_WKUP & wInterrupt_Mask)
+    if(wIstr & ISTR_WKUP)
     {
         _SetISTR((uint16_t)CLR_WKUP);
         Resume(RESUME_EXTERNAL);
@@ -149,9 +163,9 @@ void USB_Istr(void)
 #endif
     /*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*/
 #if (IMR_MSK & ISTR_SUSP)
-    if (wIstr & ISTR_SUSP & wInterrupt_Mask)
+    //if (wIstr & ISTR_SUSP & wInterrupt_Mask)
+    if(wIstr & ISTR_SUSP)
     {
-
         /* check if SUSPEND is possible */
         if (fSuspendEnabled)
         {
@@ -172,7 +186,8 @@ void USB_Istr(void)
     /*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*/
 
 #if (IMR_MSK & ISTR_ESOF)
-    if (wIstr & ISTR_ESOF & wInterrupt_Mask)
+    //if (wIstr & ISTR_ESOF & wInterrupt_Mask)
+    if (wIstr & ISTR_ESOF)
     {
         /* clear ESOF flag in ISTR */
         _SetISTR((uint16_t)CLR_ESOF);

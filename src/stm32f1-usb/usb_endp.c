@@ -33,6 +33,11 @@
 #include "usb_istr.h"
 #include "usb_pwr.h"
 
+#include "stm32f10x.h"
+#include "stm32_it.h"
+#include "platform_config.h"
+#include "usb_cdc.h"
+
 /* Private typedef -----------------------------------------------------------*/
 /* Private define ------------------------------------------------------------*/
 
@@ -139,6 +144,20 @@ void SOF_Callback(void)
             USB_CDC_Handle_USBAsynchXfer();
         }
     }
+}
+
+/*******************************************************************************
+* Function Name  : ERR_Callback / INTR_SOFINTR_Callback
+* Description    :
+* Input          : None.
+* Output         : None.
+* Return         : None.
+*******************************************************************************/
+void ERR_Callback(void)
+{
+    bDeviceState = UNCONNECTED;
+
+    bCrashed = TRUE;
 }
 /************************ (C) COPYRIGHT STMicroelectronics *****END OF FILE****/
 
