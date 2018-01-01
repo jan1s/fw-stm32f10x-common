@@ -20,6 +20,7 @@
 
 /* Includes ------------------------------------------------------------------*/
 #include "stm32f10x.h"
+#include "stm32f10x_flash.h"
 
 /* Exported constants --------------------------------------------------------*/
 /* Page size */
@@ -67,7 +68,7 @@ extern u32 _seemul;
 /* Exported types ------------------------------------------------------------*/
 /* Exported macro ------------------------------------------------------------*/
 /* Exported functions ------------------------------------------------------- */
-FLASH_Status EE_Format(void);
+//FLASH_Status EE_Format(void);
 u16 EE_ReadVariable(u16 VirtAddress, u16* Read_data);
 u16 EE_WriteVariable(u16 VirtAddress, u16 Data);
 
