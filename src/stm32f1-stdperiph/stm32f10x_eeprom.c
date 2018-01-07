@@ -241,6 +241,8 @@ u16 EE_ReadVariable(u16 VirtAddress, u16* ReadData)
   /* Check if there is no valid page */
   if (ValidPage == NO_VALID_PAGE)
   {
+	/* Format, initialize in that case */
+	EE_Format();
     return  NO_VALID_PAGE;
   }
 

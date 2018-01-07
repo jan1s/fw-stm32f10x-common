@@ -32,7 +32,7 @@ extern u32 _seemul;
 #define EEPROM_START_ADDRESS  ((u32)&_seemul) /* start of emulated EEPROM def'd in linker-script */
 /// #define EEPROM_START_ADDRESS  (u32)(0x08000000+((128-2)*1024))
 #else
-#define EEPROM_START_ADDRESS  (u32)0x08010000 /* EEPROM emulation start address:
+#define EEPROM_START_ADDRESS  (u32)0x0800f800 /* EEPROM emulation start address:
                                               after 64KByte of used Flash memory */
 #endif /* MOD_MTHOMAS_STMLIB */
 
@@ -63,7 +63,7 @@ extern u32 _seemul;
 #define PAGE_FULL    (u8)0x80
 
 /* Variables' number */
-#define NumbOfVar  (u8)0x03
+#define NumbOfVar  (u8)0x05
 
 /* Exported types ------------------------------------------------------------*/
 /* Exported macro ------------------------------------------------------------*/
