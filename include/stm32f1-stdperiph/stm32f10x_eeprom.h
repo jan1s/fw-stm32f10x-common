@@ -63,7 +63,7 @@ extern u32 _seemul;
 #define PAGE_FULL    (u8)0x80
 
 /* Variables' number */
-#define NumbOfVar  (u8)0x05
+//#define NumbOfVar  (u8)0x05
 
 /* Exported types ------------------------------------------------------------*/
 /* Exported macro ------------------------------------------------------------*/

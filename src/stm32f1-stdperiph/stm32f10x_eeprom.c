@@ -26,7 +26,8 @@
 u16 DataVar = 0 ;
 
 /* Virtual address defined by the user: 0xFFFF value is prohibited */
-extern u16 VirtAddVarTab[NumbOfVar];
+extern u16 VirtAddVarTab[];
+extern u8 NumbOfVar;
 
 /* Private function prototypes -----------------------------------------------*/
 /* Private functions ---------------------------------------------------------*/
@@ -173,6 +174,7 @@ u16 EE_VerifyPageFullWriteVariable(u16 VirtAddress, u16 Data)
   /* Check if there is no valid page */
   if (ValidPage == NO_VALID_PAGE)
   {
+	EE_Format();
     return  NO_VALID_PAGE;
   }
 
